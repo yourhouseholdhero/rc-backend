@@ -1,18 +1,36 @@
-const express = require('express');
-const app = express();
-app.use(express.json());
+const backendUrl = 'https://rc-backend-b307.onrender.com';
 
-app.post('/api/analyze', (req, res) => {
-  res.json({ description: 'Vintage Wood Mirror', value: '85', tags: ['mirror', 'wood', 'vintage'] });
-});
+async function analyzeItem() {
+  const title = document.getElementById('title').value;
 
-app.post('/api/qrcode', (req, res) => {
-  res.json({ url: `https://rc-items.netlify.app/${encodeURIComponent(req.body.title)}` });
-});
+  const res = await fetch(`${backendUrl}/api/analyze`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ title }),
+  });
 
-app.post('/api/sync', (req, res) => {
-  console.log('Syncing to Sheets:', req.body);
-  res.json({ success: true });
-});
+  const data = await res.json();
+  document.getElementById('description').innerText = data.description;
+  document.getElementById('value').innerText = data.value;
+  document.getElementById('tags').innerText = data.tags.join(', ');
+  document.getElementById('result').classList.remove('hidden');
+}
 
-app.listen(3000, () => console.log('RC Backend running at http://localhost:3000'));
+async function generateQRCode() {
+  const title = document.getElementById('title').value;
+
+  const res = await fetch(`${backendUrl}/api/qrcode`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ title }),
+  });
+
+  const data = await res.json();
+  const qrImage = document.getElementById('qrCodeImage');
+  qrImage.src = data.url;
+  qrImage.classList.remove('hidden');
+}
