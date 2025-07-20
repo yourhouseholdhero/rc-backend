@@ -1,34 +1,18 @@
-const express = require('express');
-const app = express();
+const express = require('express')
+const cors = require('cors')
+const app = express()
 
-app.use(express.json());
+app.use(cors())
+app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('✅ RC Backend Running!');
-});
+  res.send('RC backend is working!')
+})
 
-app.post('/api/analyze', (req, res) => {
-  res.json({
-    description: 'Vintage wood mirror',
-    value: 85,
-    tags: ['mirror', 'wood', 'vintage'],
-  });
-});
+// add your /api/analyze, /upload etc. here
 
-app.post('/api/qrcode', (req, res) => {
-  const { title } = req.body;
-  res.json({
-    url: `https://rc-items.netlify.app/${encodeURIComponent(title)}`,
-  });
-});
-
-app.post('/api/sync', (req, res) => {
-  console.log('Syncing to Sheets:', req.body);
-  res.json({ success: true });
-});
-
-// ✅ Works on Render & locally
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`✅ RC Backend running at http://localhost:${PORT}`);
-});
+  console.log(`Server running on port ${PORT}`)
+})
+
